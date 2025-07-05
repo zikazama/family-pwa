@@ -112,9 +112,12 @@ export default {
     fallback: true
   },
   
-  // Server configuration
+  // Server configuration (only for dev mode)
   server: {
     port: process.env.PORT || 3000,
     host: '0.0.0.0'
-  }
+  },
+  
+  // Disable server-side rendering for static generation
+  ssr: false
 } 

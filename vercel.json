@@ -1,10 +1,20 @@
 {
   "builds": [
     {
-      "src": "nuxt.config.js",
-      "use": "@nuxtjs/vercel-builder",
+      "src": "package.json",
+      "use": "@vercel/static-build",
       "config": {
-        "serverFiles": ["package.json"]
+        "distDir": "dist"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/sw.js",
+      "continue": true,
+      "headers": {
+        "Cache-Control": "public, max-age=0, must-revalidate",
+        "Service-Worker-Allowed": "/"
       }
     }
   ]

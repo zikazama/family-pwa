@@ -5,7 +5,7 @@
       <p>Welcome to your private couple dashboard</p>
     </div>
 
-    <div v-if="!$fire.auth.currentUser" class="auth-required">
+    <div v-if="!user" class="auth-required">
       <h3>Please sign in to access your couple dashboard</h3>
       <nuxt-link to="/" class="btn-home">Back to Home</nuxt-link>
     </div>
@@ -58,7 +58,7 @@
       <div class="couple-status">
         <h3>💖 Connection Status</h3>
         <div class="status-info">
-          <p><strong>You:</strong> {{ $fire.auth.currentUser.displayName }}</p>
+          <p><strong>You:</strong> {{ user.displayName }}</p>
           <p><strong>Partner:</strong> <span class="partner-status">Waiting to connect...</span></p>
           <button class="connect-btn">🔗 Invite Partner</button>
         </div>
@@ -70,6 +70,19 @@
 <script>
 export default {
   name: 'CoupleDashboard',
+  data() {
+    return {
+      user: null
+    }
+  },
+  mounted() {
+    // Only access Firebase auth on client side
+    if (process.client) {
+      this.$fire.auth.onAuthStateChanged((user) => {
+        this.user = user
+      })
+    }
+  },
   head() {
     return {
       title: 'Our Space - Zira Couple App'

@@ -4,7 +4,7 @@
       <h1 class="title">💕 Zira</h1>
       <h2 class="subtitle">Stay connected with your loved one</h2>
       
-      <div v-if="!$fire.auth.currentUser" class="auth-section">
+      <div v-if="!user" class="auth-section">
         <h3>Sign in to connect with your partner</h3>
         <button @click="signInWithGoogle" class="btn-google">
           💝 Sign in with Google
@@ -12,9 +12,9 @@
       </div>
       
       <div v-else class="user-section">
-        <h3>Welcome back, {{ $fire.auth.currentUser.displayName }}! 💖</h3>
-        <img :src="$fire.auth.currentUser.photoURL" alt="Profile" class="profile-pic">
-        <p>{{ $fire.auth.currentUser.email }}</p>
+        <h3>Welcome back, {{ user.displayName }}! 💖</h3>
+        <img :src="user.photoURL" alt="Profile" class="profile-pic">
+        <p>{{ user.email }}</p>
         <p class="connection-status">🔗 Ready to connect with your partner</p>
         
         <div class="action-buttons">
@@ -33,6 +33,19 @@
 <script>
 export default {
   name: 'IndexPage',
+  data() {
+    return {
+      user: null
+    }
+  },
+  mounted() {
+    // Only access Firebase auth on client side
+    if (process.client) {
+      this.$fire.auth.onAuthStateChanged((user) => {
+        this.user = user
+      })
+    }
+  },
   methods: {
     async signInWithGoogle() {
       try {

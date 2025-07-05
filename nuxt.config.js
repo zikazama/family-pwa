@@ -55,8 +55,12 @@ export default {
       },
       firestore: true,
       storage: true,
-      analytics: true
-    }
+      analytics: {
+        collectionEnabled: true
+      }
+    },
+    // Lazy load Firebase to reduce initial bundle size
+    lazy: true
   },
 
   // PWA module configuration
@@ -76,10 +80,37 @@ export default {
   },
 
   // Build Configuration
-  build: {},
+  build: {
+    // Optimize bundle size
+    extractCSS: true,
+    optimization: {
+      splitChunks: {
+        chunks: 'all',
+        automaticNameDelimiter: '.',
+        name: undefined,
+        cacheGroups: {
+          vendor: {
+            name: 'node_modules',
+            test: /[\\/]node_modules[\\/]/,
+            chunks: 'all',
+            maxSize: 200000
+          }
+        }
+      }
+    },
+    // Minimize bundle size
+    terser: {
+      extractComments: false
+    }
+  },
 
-  // Target for deployment
-  target: 'server',
+  // Target for deployment (static generation for better performance and smaller size)
+  target: 'static',
+  
+  // Generate configuration for static deployment
+  generate: {
+    fallback: true
+  },
   
   // Server configuration
   server: {

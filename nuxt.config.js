@@ -76,5 +76,14 @@ export default {
   },
 
   // Build Configuration
-  build: {}
+  build: {},
+
+  // Target for deployment
+  target: 'server',
+  
+  // Server configuration
+  server: {
+    port: process.env.PORT || 3000,
+    host: '0.0.0.0'
+  }
 } 

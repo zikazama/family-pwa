@@ -11,47 +11,56 @@
     </div>
 
     <div v-else class="dashboard-content">
+      <!-- couple summary new component -->
+      <CoupleSummary
+        v-if="couple"
+        :couple="couple"
+        :daysTogether="daysTogether"
+        :nextPeriod="nextPeriod"
+        @change-mood="updateMood"
+      />
+
       <div class="couple-features">
         <div class="feature-card">
           <div class="feature-icon">💬</div>
           <h3>Private Messages</h3>
           <p>Send sweet messages to each other</p>
-          <button class="feature-btn">Open Chat</button>
+          <nuxt-link to="/notes" class="feature-btn">Open Notes</nuxt-link>
         </div>
 
         <div class="feature-card">
           <div class="feature-icon">📷</div>
           <h3>Shared Photos</h3>
           <p>Create memories together</p>
-          <button class="feature-btn">View Gallery</button>
+          <button disabled class="feature-btn">Coming Soon</button>
         </div>
 
         <div class="feature-card">
           <div class="feature-icon">❤️</div>
           <h3>Love Notes</h3>
           <p>Leave surprise notes for your partner</p>
-          <button class="feature-btn">Write Note</button>
+          <button disabled class="feature-btn">Coming Soon</button>
         </div>
 
         <div class="feature-card">
           <div class="feature-icon">📅</div>
           <h3>Special Dates</h3>
           <p>Remember important moments</p>
-          <button class="feature-btn">Add Date</button>
+          <nuxt-link to="/calendar" class="feature-btn">Open Calendar</nuxt-link>
         </div>
 
         <div class="feature-card">
           <div class="feature-icon">🎯</div>
           <h3>Couple Goals</h3>
           <p>Set and achieve goals together</p>
-          <button class="feature-btn">Set Goals</button>
+          <nuxt-link to="/savings" class="feature-btn">Savings Goals</nuxt-link>
         </div>
 
         <div class="feature-card">
           <div class="feature-icon">💝</div>
           <h3>Gift Ideas</h3>
           <p>Save gift ideas for each other</p>
-          <button class="feature-btn">Add Ideas</button>
+          <nuxt-link to="/settings" class="feature-btn">Settings</nuxt-link>
         </div>
       </div>
 
@@ -68,8 +77,10 @@
 </template>
 
 <script>
+import CoupleSummary from '~/components/CoupleSummary.vue'
 export default {
   name: 'CoupleDashboard',
+  components: { CoupleSummary },
   data() {
     return {
       user: null
@@ -80,12 +91,31 @@ export default {
     if (process.client) {
       this.$fire.auth.onAuthStateChanged((user) => {
         this.user = user
+        if (user) {
+          this.$store.dispatch('couple/fetchCouple')
+        }
       })
     }
   },
   head() {
     return {
       title: 'Our Space - Zira Couple App'
+    }
+  },
+  computed: {
+    couple() {
+      return this.$store.getters['couple/couple']
+    },
+    daysTogether() {
+      return this.$store.getters['couple/daysTogether']
+    },
+    nextPeriod() {
+      return this.$store.getters['couple/nextPeriodDate']
+    }
+  },
+  methods: {
+    updateMood(newMood) {
+      this.$store.dispatch('couple/updateCouple', { mood: newMood })
     }
   }
 }

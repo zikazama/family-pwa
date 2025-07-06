@@ -28,6 +28,16 @@
         <input id="bgPhoto" type="file" accept="image/*" @change="onFileChange" />
       </div>
 
+      <div class="form-group">
+        <label for="lastPeriod">Last Period Started</label>
+        <input id="lastPeriod" type="date" v-model="lastPeriodDate" />
+      </div>
+
+      <div class="form-group">
+        <label for="cycle">Cycle Length (days)</label>
+        <input id="cycle" type="number" min="15" max="60" v-model.number="cycleLength" />
+      </div>
+
       <button type="submit" class="btn-save" :disabled="uploading">{{ uploading ? 'Uploading...' : 'Save Settings' }}</button>
       <p v-if="successMsg" class="success-msg">{{ successMsg }}</p>
     </form>
@@ -49,7 +59,9 @@ export default {
       darkMode: false,
       backgroundFile: null,
       uploading: false,
-      successMsg: ''
+      successMsg: '',
+      lastPeriodDate: '',
+      cycleLength: 28
     }
   },
   computed: {
@@ -64,6 +76,8 @@ export default {
           this.partnerName = val.partnerName || ''
           this.anniversaryDate = val.anniversaryDate ? this.formatDateInput(val.anniversaryDate) : ''
           this.darkMode = !!val.darkMode
+          this.lastPeriodDate = val.lastPeriodDate ? this.formatDateInput(val.lastPeriodDate) : ''
+          this.cycleLength = val.cycleLength || 28
         }
       }
     },
@@ -90,7 +104,9 @@ export default {
         myName: this.myName,
         partnerName: this.partnerName,
         anniversaryDate: this.anniversaryDate ? new Date(this.anniversaryDate).toISOString() : null,
-        darkMode: this.darkMode
+        darkMode: this.darkMode,
+        lastPeriodDate: this.lastPeriodDate ? new Date(this.lastPeriodDate).toISOString() : null,
+        cycleLength: this.cycleLength
       }
 
       try {

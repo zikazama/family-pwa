@@ -45,4 +45,10 @@ body {
 #app {
   min-height: 100vh;
 }
+
+/* Dark mode helper class */
+.dark-mode body {
+  background: #121212;
+  color: #f5f5f5;
+}
 </style> 

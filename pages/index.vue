@@ -9,6 +9,7 @@
         <button @click="signInWithGoogle" class="btn-google">
           💝 Sign in with Google
         </button>
+        <p v-if="errorMsg" class="error-msg">{{ errorMsg }}</p>
       </div>
       
       <div v-else class="user-section">
@@ -35,7 +36,8 @@ export default {
   name: 'IndexPage',
   data() {
     return {
-      user: null
+      user: null,
+      errorMsg: ''
     }
   },
   mounted() {
@@ -66,6 +68,7 @@ export default {
       } catch (error) {
         console.error('Error signing in:', error)
         alert('Google sign-in failed. Please try again or check your connection.')
+        this.errorMsg = error.message || 'Sign-in failed'
       }
     },
     async signOut() {
@@ -199,5 +202,10 @@ h3 {
 p {
   color: #526488;
   margin: 0.5rem 0;
+}
+
+.error-msg {
+  color: #b00020;
+  margin-top: 0.8rem;
 }
 </style> 

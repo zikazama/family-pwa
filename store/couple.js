@@ -4,13 +4,15 @@ export const namespaced = true;
 export const state = () => ({
   couple: null,
   loading: false,
-  error: null
+  error: null,
+  unsubListener: null
 })
 
 export const mutations = {
   SET_COUPLE(state, payload) {
     state.couple = payload
   },
+  SET_UNSUB(state, fn) { state.unsubListener = fn },
   SET_LOADING(state, status) {
     state.loading = status
   },
@@ -33,7 +35,7 @@ export const actions = {
         }
 
         // Couple document key strategy: use the UID as key for prototype stage
-        const docRef = await this.$fire.firestore.collection('couples').doc(uid)
+        const docRef = this.$fire.firestore.collection('couples').doc(uid)
         const snapshot = await docRef.get()
 
         if (snapshot.exists) {
@@ -59,6 +61,27 @@ export const actions = {
       commit('SET_ERROR', err)
     } finally {
       commit('SET_LOADING', false)
+    }
+  },
+
+  subscribeCouple({ dispatch, commit, state, rootState }) {
+    // avoid multiple listeners
+    if (state.unsubListener) state.unsubListener()
+    const uid = rootState.user?.uid || (this.$fire?.auth?.currentUser?.uid ?? null)
+    if (!uid) return
+    const docRef = this.$fire.firestore.collection('couples').doc(uid)
+    const unsub = docRef.onSnapshot((snap) => {
+      if (snap.exists) {
+        commit('SET_COUPLE', { id: snap.id, ...snap.data() })
+      }
+    })
+    commit('SET_UNSUB', unsub)
+  },
+
+  unsubscribeCouple({ state, commit }) {
+    if (state.unsubListener) {
+      state.unsubListener()
+      commit('SET_UNSUB', null)
     }
   },
 

@@ -92,10 +92,13 @@ export default {
       this.$fire.auth.onAuthStateChanged((user) => {
         this.user = user
         if (user) {
-          this.$store.dispatch('couple/fetchCouple')
+          this.$store.dispatch('couple/subscribeCouple')
         }
       })
     }
+  },
+  beforeDestroy() {
+    this.$store.dispatch('couple/unsubscribeCouple')
   },
   head() {
     return {

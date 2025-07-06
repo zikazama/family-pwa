@@ -49,18 +49,19 @@ export default {
   methods: {
     async signInWithGoogle() {
       try {
-        const provider = new (this.$fireModule ? this.$fireModule.auth.GoogleAuthProvider : window.firebase.auth.GoogleAuthProvider)()
-
-        // Try popup first (better UX)
+        const provider = new this.$fireModule.auth.GoogleAuthProvider()
         try {
           await this.$fire.auth.signInWithPopup(provider)
         } catch (err) {
-          // Fallback to redirect for environments where popup is not supported (e.g., mobile PWA)
-          if (err.code === 'auth/operation-not-supported-in-this-environment' || err.code === 'auth/popup-blocked') {
+          // Known cases where popup fails – fall back to redirect (e.g. mobile browser/PWA)
+          const fallbackCodes = ['auth/operation-not-supported-in-this-environment', 'auth/popup-blocked']
+          if (fallbackCodes.includes(err.code)) {
             await this.$fire.auth.signInWithRedirect(provider)
-          } else {
-            throw err
+            return
           }
+          // Ignore user-closed popup
+          if (err.code === 'auth/popup-closed-by-user') return
+          throw err
         }
       } catch (error) {
         console.error('Error signing in:', error)

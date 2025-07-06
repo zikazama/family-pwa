@@ -32,6 +32,8 @@
 </template>
 
 <script>
+import firebase from 'firebase/app'
+import 'firebase/auth'
 export default {
   name: 'IndexPage',
   data() {
@@ -51,7 +53,7 @@ export default {
   methods: {
     async signInWithGoogle() {
       try {
-        const provider = new this.$fireModule.auth.GoogleAuthProvider()
+        const provider = new firebase.auth.GoogleAuthProvider()
         try {
           await this.$fire.auth.signInWithPopup(provider)
         } catch (err) {

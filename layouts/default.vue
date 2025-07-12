@@ -6,7 +6,27 @@
 
 <script>
 export default {
-  name: 'DefaultLayout'
+  name: 'DefaultLayout',
+  async mounted() {
+    // Tunggu user login
+    this.$watch(
+      () => this.$store.state.user,
+      async (user) => {
+        if (user && this.$messaging) {
+          try {
+            await this.$messaging.requestPermission()
+            const token = await this.$messaging.getToken()
+            if (token) {
+              await this.$fire.firestore.collection('users').doc(user.uid).update({ fcmToken: token })
+            }
+          } catch (e) {
+            // User menolak notifikasi atau error
+          }
+        }
+      },
+      { immediate: true }
+    )
+  }
 }
 </script>
 

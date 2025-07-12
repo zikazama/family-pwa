@@ -4,12 +4,19 @@ A beautiful Progressive Web Application built with Nuxt.js and Firebase integrat
 
 ## Features
 
-- 💝 Firebase Authentication (Google Sign-in)
-- 💾 Firestore Database for shared memories
-- 📱 Progressive Web App (PWA)
-- 💖 Beautiful couple-focused UI/UX
-- 📱 Mobile-first responsive design
-- 🔗 Partner connection system
+- 🔐 Register & Sign in with email, password, username, gender, birth date, and anniversary date
+- 🌏 **Timezone support:** Each user can select their timezone (WIB, WITA, WIT) for all events, reminders, and cycles
+- 👩‍❤️‍👨 Couple dashboard: display "Nama Pria ❤️ Nama Wanita", days together, mood & status emoji, customizable romantic background, love button (vibrate & push notification)
+- 📅 Calendar: create/edit/delete events, see who created/updated, push notification 30 minutes before event, **all times shown in your selected timezone**
+- 📝 Notes: rich text editor, info creator & last updater
+- 💬 Messaging: real-time chat with emoji picker
+- ⏰ Reminder: CRUD, push notification at scheduled time, **all times shown in your selected timezone**
+- 🌸 Siklus Haid: input history, automatic next period prediction, **dates shown in your selected timezone**
+- 💰 Keuangan: savings & debt, target prediction, period-based calculation
+- ⚙️ Settings: change password, upload/change profile photo, **choose your timezone (WIB, WITA, WIT)**
+- 🔔 Important date notifications: 1 month, 1 week, 1 day before anniversary & birthdays
+- 📱 Progressive Web App (PWA): installable, offline support, push notifications
+- 🎨 Beautiful, friendly, responsive, and romantic pink theme
 
 ## Prerequisites
 
@@ -33,10 +40,12 @@ A beautiful Progressive Web Application built with Nuxt.js and Firebase integrat
 
 3. **Enable Firebase Services:**
    Make sure the following services are enabled in your Firebase console:
-   - Authentication (with Google Sign-in provider)
+   - Authentication (Email/Password)
    - Firestore Database
    - Storage
    - Analytics
+   - Cloud Messaging
+   - Cloud Functions (for push notification automation)
 
 ## Development
 
@@ -69,7 +78,7 @@ zira/
 ├── layouts/            # Nuxt layouts
 ├── pages/              # Application pages/routes
 ├── plugins/            # Nuxt plugins
-├── static/             # Static assets
+├── static/             # Static assets (manifest, service worker, icons)
 ├── store/              # Vuex store for couple state
 ├── middleware/         # Nuxt middleware
 ├── nuxt.config.js      # Nuxt configuration
@@ -81,27 +90,32 @@ zira/
 
 The app integrates with Firebase through:
 
-- **Authentication**: Google Sign-in for couple authentication
-- **Firestore**: Real-time database for shared memories, messages, and couple data
-- **Storage**: Photo and file sharing between partners
+- **Authentication**: Email/Password for couple authentication
+- **Firestore**: Real-time database for shared memories, messages, couple data, events, notes, reminders, cycles, finance
+- **Storage**: Photo and file sharing between partners (background, profile photo)
 - **Analytics**: Couple interaction tracking
+- **Cloud Messaging**: Push notifications for events, reminders, love button, important dates
+- **Cloud Functions**: Automated push notifications
 
 ## PWA Features
-
-The app includes PWA capabilities:
 
 - Offline functionality
 - App-like experience on mobile devices
 - Install prompt for home screen
-- Service worker for caching
+- Service worker for caching and push notification
 
-## Contributing
+## Notifikasi Otomatis (Cloud Functions)
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+Deploy Cloud Functions (lihat instruksi di dokumentasi/AI) untuk:
+- Notifikasi event/reminder 30 menit sebelum mulai
+- Notifikasi hari penting (jadian, ulang tahun) 1 bulan, 1 minggu, 1 hari sebelum
+- Notifikasi love button ke pasangan
+
+## Timezone Support (WIB, WITA, WIT)
+
+- Set your timezone in the Settings menu (WIB = GMT+7, WITA = GMT+8, WIT = GMT+9)
+- All event, reminder, and cycle times will be displayed in your selected timezone
+- Both partners can use different timezones and see all dates/times in their own local time
 
 ## License
 

@@ -68,8 +68,8 @@
         <h3>💖 Connection Status</h3>
         <div class="status-info">
           <p><strong>You:</strong> {{ user.displayName }}</p>
-          <p><strong>Partner:</strong> <span class="partner-status">Waiting to connect...</span></p>
-          <button class="connect-btn">🔗 Invite Partner</button>
+          <p><strong>Partner:</strong> <span class="partner-status">{{ partner ? partner.username : 'Waiting to connect...' }}</span></p>
+          <button class="connect-btn" @click="invitePartner">🔗 Invite Partner</button>
         </div>
       </div>
     </div>
@@ -83,22 +83,47 @@ export default {
   components: { CoupleSummary },
   data() {
     return {
-      user: null
+      user: null,
+      partner: null
     }
   },
-  mounted() {
-    // Only access Firebase auth on client side
-    if (process.client) {
-      this.$fire.auth.onAuthStateChanged((user) => {
+  async mounted() {
+    if (
+      process.client &&
+      this.$fire &&
+      this.$fire.auth &&
+      typeof this.$fire.auth.onAuthStateChanged === 'function'
+    ) {
+      this.$fire.auth.onAuthStateChanged(async (user) => {
         this.user = user
         if (user) {
-          this.$store.dispatch('couple/subscribeCouple')
+          // Ambil profile user
+          const snap = await this.$fire.firestore.collection('users').doc(user.uid).get()
+          const profile = snap.data()
+          if (profile && profile.pasanganUID) {
+            // Ambil profile pasangan
+            const psnap = await this.$fire.firestore.collection('users').doc(profile.pasanganUID).get()
+            this.partner = psnap.exists ? psnap.data() : null
+          }
         }
       })
     }
   },
-  beforeDestroy() {
-    this.$store.dispatch('couple/unsubscribeCouple')
+  methods: {
+    async invitePartner() {
+      const partnerUsername = prompt('Masukkan username pasangan Anda:')
+      if (!partnerUsername) return
+      // Cari user dengan username tsb
+      const q = await this.$fire.firestore.collection('users').where('username', '==', partnerUsername).get()
+      if (q.empty) return alert('Username tidak ditemukan!')
+      const partnerDoc = q.docs[0]
+      const partnerUID = partnerDoc.id
+      // Update pasanganUID untuk kedua user
+      await this.$fire.firestore.collection('users').doc(this.user.uid).update({ pasanganUID: partnerUID })
+      await this.$fire.firestore.collection('users').doc(partnerUID).update({ pasanganUID: this.user.uid })
+      alert('Berhasil terhubung dengan pasangan!')
+      location.reload()
+    }
   },
   head() {
     return {

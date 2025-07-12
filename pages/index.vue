@@ -1,84 +1,56 @@
 <template>
-  <div class="container">
-    <div class="hero">
-      <h1 class="title">💕 Zira</h1>
-      <h2 class="subtitle">Stay connected with your loved one</h2>
-      
-      <div v-if="!user" class="auth-section">
-        <h3>Sign in to connect with your partner</h3>
-        <button @click="signInWithGoogle" class="btn-google">
-          💝 Sign in with Google
-        </button>
-        <p v-if="errorMsg" class="error-msg">{{ errorMsg }}</p>
-      </div>
-      
-      <div v-else class="user-section">
-        <h3>Welcome back, {{ user.displayName }}! 💖</h3>
-        <img :src="user.photoURL" alt="Profile" class="profile-pic">
-        <p>{{ user.email }}</p>
-        <p class="connection-status">🔗 Ready to connect with your partner</p>
-        
-        <div class="action-buttons">
-          <nuxt-link to="/couple" class="btn-dashboard">
-            💕 Open Our Space
-          </nuxt-link>
-          <button @click="signOut" class="btn-signout">
-            Sign Out
-          </button>
-        </div>
-      </div>
-    </div>
+  <div class="auth-container">
+    <form @submit.prevent="login">
+      <input v-model="email" type="email" placeholder="Email" required />
+      <input v-model="password" type="password" placeholder="Password" required />
+      <button type="submit">Sign In</button>
+    </form>
+    <form @submit.prevent="register" class="register-form">
+      <input v-model="regEmail" type="email" placeholder="Email" required />
+      <input v-model="regPassword" type="password" placeholder="Password" required />
+      <input v-model="username" type="text" placeholder="Username" required />
+      <select v-model="gender" required>
+        <option disabled value="">Pilih Gender</option>
+        <option value="pria">Pria</option>
+        <option value="wanita">Wanita</option>
+      </select>
+      <label>Tanggal Lahir</label>
+      <input v-model="birthDate" type="date" required />
+      <label>Tanggal Jadian</label>
+      <input v-model="startDate" type="date" required />
+      <button type="submit">Register</button>
+    </form>
   </div>
 </template>
-
 <script>
 import firebase from 'firebase/app'
 import 'firebase/auth'
 export default {
-  name: 'IndexPage',
   data() {
     return {
-      user: null,
-      errorMsg: ''
-    }
-  },
-  mounted() {
-    // Only access Firebase auth on client side
-    if (process.client) {
-      this.$fire.auth.onAuthStateChanged((user) => {
-        this.user = user
-      })
+      email: '', password: '',
+      regEmail: '', regPassword: '', username: '', gender: '', birthDate: '', startDate: ''
     }
   },
   methods: {
-    async signInWithGoogle() {
-      try {
-        const provider = new firebase.auth.GoogleAuthProvider()
-        try {
-          await this.$fire.auth.signInWithPopup(provider)
-        } catch (err) {
-          // Known cases where popup fails – fall back to redirect (e.g. mobile browser/PWA)
-          const fallbackCodes = ['auth/operation-not-supported-in-this-environment', 'auth/popup-blocked']
-          if (fallbackCodes.includes(err.code)) {
-            await this.$fire.auth.signInWithRedirect(provider)
-            return
-          }
-          // Ignore user-closed popup
-          if (err.code === 'auth/popup-closed-by-user') return
-          throw err
-        }
-      } catch (error) {
-        console.error('Error signing in:', error)
-        alert('Google sign-in failed. Please try again or check your connection.')
-        this.errorMsg = error.message || 'Sign-in failed'
-      }
+    async login() {
+      await this.$fire.auth().signInWithEmailAndPassword(this.email, this.password)
+      this.$router.push('/dashboard')
     },
-    async signOut() {
-      try {
-        await this.$fire.auth.signOut()
-      } catch (error) {
-        console.error('Error signing out:', error)
-      }
+    async register() {
+      // Register user
+      const cred = await this.$fire.auth().createUserWithEmailAndPassword(this.regEmail, this.regPassword)
+      // Simpan data user ke Firestore
+      await this.$fire.firestore().collection('users').doc(cred.user.uid).set({
+        username: this.username,
+        gender: this.gender,
+        birthDate: this.birthDate,
+        startDate: this.startDate,
+        email: this.regEmail,
+        photoURL: null,
+        pasanganUID: null
+      })
+      this.$router.push('/dashboard')
     }
   }
 }

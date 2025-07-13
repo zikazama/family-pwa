@@ -1,10 +1,10 @@
 <template>
-  <div :style="{ backgroundImage: `url(${background})` }" class="dashboard-bg">
+  <div class="responsive-container dashboard-bg" :style="{ backgroundImage: `url(${background})` }">
     <div class="couple-names">{{ manName }} ❤️ {{ womanName }}</div>
     <div class="days-together">Sudah {{ daysTogether }} hari bersama</div>
     <LoveButton @sendLove="sendLove" />
     <MoodStatus v-model:mood="mood" v-model:status="status" />
-    <input type="file" @change="uploadBackground" />
+    <input type="file" @change="uploadBackground" class="input-primary" />
     <BottomBar />
   </div>
 </template>
@@ -91,4 +91,46 @@ export default {
     }
   }
 }
-</script> 
+</script>
+<style lang="scss">
+@use '@/assets/styles/theme-pink.scss' as *;
+.dashboard-bg {
+  min-height: 100vh;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 2rem 0.5rem 5rem 0.5rem;
+}
+.couple-names {
+  font-size: 2rem;
+  color: $color-primary;
+  margin-top: 2rem;
+  text-shadow: 0 2px 8px $color-white;
+}
+.days-together {
+  font-size: 1.2rem;
+  color: $color-secondary;
+  margin-bottom: 1rem;
+}
+input[type="file"].input-primary {
+  margin: 1rem 0;
+  background: $color-white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 0.5rem;
+  width: 100%;
+  max-width: 350px;
+}
+@media (max-width: 600px) {
+  .dashboard-bg {
+    padding: 1rem 0.2rem 5rem 0.2rem;
+  }
+  .couple-names {
+    font-size: 1.2rem;
+    margin-top: 1rem;
+  }
+}
+</style> 

@@ -4,12 +4,15 @@
   "private": true,
   "scripts": {
     "build": "nuxt generate",
-    "dev": "nuxt",
+    "dev": "NUXT_DISABLE_SASS_LEGACY_API_WARNING=1 nuxt",
     "generate": "nuxt generate",
-    "start": "nuxt start"
+    "start": "nuxt start",
+    "dev:clean": "npm run dev 2>&1 | grep -v 'Deprecation Warning \\[legacy-js-api\\]'"
   },
   "devDependencies": {
-    "@nuxtjs/pwa": "^3.3.5"
+    "@nuxtjs/pwa": "^3.3.5",
+    "sass": "^1.89.2",
+    "sass-loader": "10.4.1"
   },
   "dependencies": {
     "@firebasegen/default-connector": "file:dataconnect-generated/js/default-connector",

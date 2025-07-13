@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-    <Nuxt />
+    <div class="fade-in-screen">
+      <Nuxt />
+    </div>
   </div>
 </template>
 
@@ -66,6 +68,14 @@ body {
   min-height: 100vh;
 }
 
+.fade-in-screen {
+  opacity: 0;
+  animation: fadeInScreen 0.8s cubic-bezier(.4,0,.2,1) forwards;
+}
+@keyframes fadeInScreen {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 /* Dark mode helper class */
 .dark-mode body {
   background: #121212;

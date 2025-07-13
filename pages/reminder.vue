@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <h1>Reminder</h1>
+  <div class="responsive-container">
+    <h1 class="page-title">Reminder</h1>
     <ReminderForm v-if="editing" :reminder="editing" @save="saveReminder" @cancel="editing=null" />
     <ReminderForm v-else @save="addReminder" />
     <ReminderList :reminders="reminders" @edit="editReminder" @delete="deleteReminder" />
@@ -50,4 +50,20 @@ export default {
     }
   }
 }
-</script> 
+</script>
+<style lang="scss">
+@use '@/assets/styles/theme-pink.scss' as *;
+.page-title {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: $color-primary;
+  font-size: 2rem;
+  font-weight: 700;
+}
+@media (max-width: 600px) {
+  .page-title {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+  }
+}
+</style> 

@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <h1>Notes</h1>
+  <div class="responsive-container">
+    <h1 class="page-title">Notes</h1>
     <NoteEditor v-if="editing" :note="editing" @save="saveNote" @cancel="editing=null" />
     <NoteEditor v-else @save="addNote" />
     <NoteList :notes="notes" @edit="editNote" @delete="deleteNote" />
@@ -35,3 +35,19 @@ export default {
   }
 }
 </script>
+<style lang="scss">
+@use '@/assets/styles/theme-pink.scss' as *;
+.page-title {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: $color-primary;
+  font-size: 2rem;
+  font-weight: 700;
+}
+@media (max-width: 600px) {
+  .page-title {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+  }
+}
+</style>

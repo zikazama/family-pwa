@@ -1,24 +1,10 @@
 <template>
-  <div class="auth-container">
-    <form @submit.prevent="login">
-      <input v-model="email" type="email" placeholder="Email" required />
-      <input v-model="password" type="password" placeholder="Password" required />
-      <button type="submit">Sign In</button>
-    </form>
-    <form @submit.prevent="register" class="register-form">
-      <input v-model="regEmail" type="email" placeholder="Email" required />
-      <input v-model="regPassword" type="password" placeholder="Password" required />
-      <input v-model="username" type="text" placeholder="Username" required />
-      <select v-model="gender" required>
-        <option disabled value="">Pilih Gender</option>
-        <option value="pria">Pria</option>
-        <option value="wanita">Wanita</option>
-      </select>
-      <label>Tanggal Lahir</label>
-      <input v-model="birthDate" type="date" required />
-      <label>Tanggal Jadian</label>
-      <input v-model="startDate" type="date" required />
-      <button type="submit">Register</button>
+  <div class="responsive-container auth-container fade-in-screen">
+    <h1 class="zira-title">ZIRA</h1>
+    <form @submit.prevent="login" class="fade-in-form">
+      <input v-model="email" type="email" placeholder="Email" required class="input-primary" />
+      <input v-model="password" type="password" placeholder="Password" required class="input-primary" />
+      <button type="submit" class="btn-primary">Sign In</button>
     </form>
   </div>
 </template>
@@ -28,158 +14,92 @@ import 'firebase/auth'
 export default {
   data() {
     return {
-      email: '', password: '',
-      regEmail: '', regPassword: '', username: '', gender: '', birthDate: '', startDate: ''
+      email: '', password: ''
     }
   },
   methods: {
     async login() {
       await this.$fire.auth().signInWithEmailAndPassword(this.email, this.password)
       this.$router.push('/dashboard')
-    },
-    async register() {
-      // Register user
-      const cred = await this.$fire.auth().createUserWithEmailAndPassword(this.regEmail, this.regPassword)
-      // Simpan data user ke Firestore
-      await this.$fire.firestore().collection('users').doc(cred.user.uid).set({
-        username: this.username,
-        gender: this.gender,
-        birthDate: this.birthDate,
-        startDate: this.startDate,
-        email: this.regEmail,
-        photoURL: null,
-        pasanganUID: null
-      })
-      this.$router.push('/dashboard')
     }
   }
 }
 </script>
 
-<style scoped>
-.container {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
-}
-
-.hero {
-  background: white;
-  padding: 2rem;
-  border-radius: 10px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  max-width: 500px;
-  width: 90%;
-}
-
-.title {
-  font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  display: block;
-  font-weight: 300;
-  font-size: 3rem;
-  color: #35495e;
-  letter-spacing: 1px;
-  margin-bottom: 1rem;
-}
-
-.subtitle {
-  font-weight: 300;
-  font-size: 1.5rem;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 2rem;
-}
-
-.auth-section, .user-section {
-  margin-top: 2rem;
-}
-
-.btn-google {
-  background-color: #e91e63;
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 25px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: all 0.3s;
-  box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);
-}
-
-.btn-google:hover {
-  background-color: #c2185b;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(233, 30, 99, 0.4);
-}
-
-.action-buttons {
+<style lang="scss">
+@use '@/assets/styles/theme-pink.scss' as *;
+.auth-container {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  margin-top: 1.5rem;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+  animation: fadeInScreen 0.8s cubic-bezier(.4,0,.2,1);
 }
-
-.btn-dashboard {
-  background-color: #e91e63;
-  color: white;
-  text-decoration: none;
-  padding: 12px 24px;
-  border-radius: 25px;
-  font-size: 1rem;
-  transition: all 0.3s;
-  display: inline-block;
+.zira-title {
+  font-family: 'Poppins', 'Montserrat', Arial, sans-serif;
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: $color-primary;
+  letter-spacing: 0.1em;
+  margin-bottom: 1.2rem;
+  text-shadow: 0 2px 12px rgba(233,30,99,0.09);
+  animation: fadeInTitle 1.1s cubic-bezier(.4,0,.2,1);
 }
-
-.btn-dashboard:hover {
-  background-color: #c2185b;
-  transform: translateY(-2px);
+form {
+  background: $color-white;
+  padding: 1.2rem 1.2rem 1.4rem 1.2rem;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(233,30,99,0.07);
+  margin-bottom: 2rem;
+  width: 100%;
+  max-width: 340px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  animation: fadeInForm 1.2s cubic-bezier(.4,0,.2,1);
 }
-
-.btn-signout {
-  background-color: #757575;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 20px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: all 0.3s;
+.fade-in-screen {
+  opacity: 0;
+  animation: fadeInScreen 0.8s cubic-bezier(.4,0,.2,1) forwards;
 }
-
-.btn-signout:hover {
-  background-color: #616161;
+.fade-in-form {
+  opacity: 0;
+  animation: fadeInForm 1.2s cubic-bezier(.4,0,.2,1) 0.2s forwards;
 }
-
-.profile-pic {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  margin: 1rem 0;
-  border: 3px solid #e91e63;
+@keyframes fadeInScreen {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-
-.connection-status {
-  color: #e91e63;
-  font-weight: 500;
-  margin: 1rem 0;
+@keyframes fadeInForm {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-
-h3 {
-  color: #35495e;
-  margin-bottom: 1rem;
+@keyframes fadeInTitle {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-
-p {
-  color: #526488;
-  margin: 0.5rem 0;
+.register-form {
+  margin-top: 1rem;
 }
-
-.error-msg {
-  color: #b00020;
-  margin-top: 0.8rem;
+label {
+  color: $color-primary-dark;
+  font-weight: 600;
+  margin-bottom: 0.2rem;
+}
+@media (max-width: 600px) {
+  .auth-container {
+    padding: 0.5rem;
+  }
+  form {
+    padding: 0.7rem 0.7rem 1rem 0.7rem;
+    border-radius: 8px;
+    max-width: 100%;
+  }
+  .zira-title {
+    font-size: 1.6rem;
+    margin-bottom: 0.7rem;
+  }
 }
 </style> 

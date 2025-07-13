@@ -1,11 +1,13 @@
 <template>
-  <div>
+  <div class="responsive-container">
     <div v-for="event in events" :key="event.id" class="event-item">
       <b>{{ event.title }}</b><br/>
       <span>{{ formatTime(event.start) }} - {{ formatTime(event.end) }}</span><br/>
       <small>Dibuat: {{ event.createdBy }} | Diperbarui: {{ event.updatedBy }}</small>
-      <button @click="$emit('edit', event)">Edit</button>
-      <button @click="$emit('delete', event.id)">Hapus</button>
+      <div class="event-actions">
+        <button @click="$emit('edit', event)" class="btn-primary">Edit</button>
+        <button @click="$emit('delete', event.id)" class="btn-primary btn-cancel">Hapus</button>
+      </div>
     </div>
   </div>
 </template>
@@ -25,6 +27,60 @@ export default {
   }
 }
 </script>
-<style scoped>
-.event-item { margin-bottom: 1rem; padding: 1rem; background: #fff0f6; border-radius: 8px; }
+<style lang="scss">
+@use '~/assets/styles/theme-pink.scss' as *;
+.responsive-container {
+  max-width: 600px;
+  margin: 1.5rem auto;
+  padding: 0 1rem;
+}
+.event-item {
+  margin-bottom: 1.2rem;
+  padding: 1.3rem 1.1rem;
+  background: rgba(255,255,255,0.85);
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(233,30,99,0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  border: 1.5px solid $color-primary-light;
+}
+.event-actions {
+  display: flex;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  margin-top: 0.2rem;
+}
+.btn-primary {
+  background: $color-primary;
+  color: $color-white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 1px 4px rgba(233,30,99,0.07);
+}
+.btn-primary:hover, .btn-primary:focus {
+  background: $color-primary-dark;
+  outline: none;
+}
+.btn-cancel {
+  background: #eee !important;
+  color: #333 !important;
+}
+@media (max-width: 600px) {
+  .responsive-container {
+    padding: 0 0.2rem;
+  }
+  .event-item {
+    padding: 0.7rem 0.3rem;
+  }
+  .event-actions {
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+}
 </style> 
